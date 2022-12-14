@@ -1,0 +1,31 @@
+{
+  "mainPageIdentifier" : "//*[@id = 'home_maincap_v7']",
+  "newAndRemarkableBtnPath": "//*[@id = 'noteworthy_tab']//a[contains(@class, 'desktop')]",
+  "salesLeadersBtnPath": "//*[@id = 'noteworthy_flyout']//a[contains(text(), 'Лидеры')]",
+  "topSellingPage": "//*[contains(@class, 'weeklytopsellers_ChartPlaceholder')]",
+  "moreBtnPath": "//*[contains(@class, 'weeklytopsellers_BrowseTopSellersButton')]//button",
+
+  "morePage": "//*[@id='price_range']",
+  "osCheckedBoxPath": "//*[@data-loc='SteamOS + Linux' and contains(@class, 'checked')]",
+  "osUncheckedBoxPath": "//*[@data-loc='SteamOS + Linux' and contains(@class,'tab_filter_control_row')]",
+
+  "playersCountPath": "//*[@data-collapse-name='category3' and contains(@class,'collapsed')]",
+  "playersCountPopup": "//*[contains(@class,'block_content_inner') and @style='display: block;']",
+  "coopUncheckedBoxPath": "//*[@data-loc='Кооператив (LAN)' and contains(@class,'control_row')]",
+  "coopCheckedBoxPath": "//*[@id='category3']",
+
+  "actionUncheckedBoxPath": "//*[@data-loc='Экшен' and contains(@class,'row')]",
+  "actionCheckedBoxPath": "//*[@id='tags']",
+
+  "resultsCountText": "//*[contains(@id,'search_results_filtered')]//div[contains(text(), 'Результатов')]",
+  "resultElements": "//*[@id='search_resultsRows']//a",
+  "gamePageUnique": "//*[@id='game_highlights']",
+  "firstElementPath": "//*[@id='search_resultsRows']//a[1]",
+  "firstElementName": "//span[@class='title']",
+  "firstElementReleaseDate": "//*[contains(@class, 'search_released')]",
+  "firstElementPrice": "//*[contains(@class, 'search_price ')]",
+
+  "gameName": "//*[@id='appHubAppName']",
+  "releaseDate": "//*[@class='release_date']//*[@class='date']",
+  "gamePrice": "//*[contains(@class,'purchase_game')]//*[contains(@class,'purchase_price')]"
+}

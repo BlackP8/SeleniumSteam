@@ -1,0 +1,9 @@
+{
+  "playersCount": "1",
+  "aboutPage": "//*[@id='about_greeting']//a",
+  "gamersOnlineCount": "//*[@class='online_stat'][1]",
+  "gamersInGameCount": "//*[@class='online_stat'][2]",
+  "aboutBtnPath": "//*[@class='supernav_container']//a[contains(text(), 'ABOUT')]",
+  "storeBtnPath": "//*[@class='supernav_container']//a[contains(text(), 'STORE')]",
+  "mainPageIdentifier" : "//*[@id = 'home_maincap_v7']"
+}

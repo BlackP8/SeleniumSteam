@@ -1,0 +1,11 @@
+{
+  "incognitoMode": "incognito",
+  "explicitWaitTime": "5",
+  "implicitWaitTime": "5",
+  "testDataForTestCase1":"src/test/resources/testcase1_data.json",
+  "testDataForTestCase2":"src/test/resources/testcase2_data.json",
+  "testDataForTestCase3":"src/test/resources/testcase3_data.json",
+  "engLang":"--lang=en-us",
+  "rusLang":"--lang=ru-ru",
+  "mainPageURL" : "https://store.steampowered.com/"
+}
