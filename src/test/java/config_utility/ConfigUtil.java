@@ -12,12 +12,13 @@ import java.io.IOException;
  * @author Pavel Romanov 09.12.2022
  */
 public class ConfigUtil {
+    private static final String PATH_TO_CONFIG_FILE = "src/test/resources/configuration.json";
     private static JSONParser parser = new JSONParser();
     private static JSONObject jsonConfObject;
     private static JSONObject jsonTestObject;
 
     public static void setConfig() {
-        try(BufferedReader reader = new BufferedReader(new FileReader("src/test/resources/configuration.json"))) {
+        try(BufferedReader reader = new BufferedReader(new FileReader(PATH_TO_CONFIG_FILE))) {
             Object obj = parser.parse(reader);
             jsonConfObject = (JSONObject)obj;
         }

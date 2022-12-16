@@ -12,4 +12,9 @@
             <class name = "test_case2.Test2"/>
         </classes>
     </test>
+    <test name = "Test case 3">
+        <classes>
+            <class name = "test_case3.Test3"/>
+        </classes>
+    </test>
 </suite>

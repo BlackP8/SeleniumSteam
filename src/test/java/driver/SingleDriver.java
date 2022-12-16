@@ -16,31 +16,29 @@ public class SingleDriver {
 
     private SingleDriver() { }
 
-    public static WebDriver getInstance(){
+    public static WebDriver getInstance(boolean langFlag) {
         if(webDriver == null) {
             ConfigUtil.setConfig();
             WebDriverManager.chromedriver().setup();
-            ChromeOptions options = new ChromeOptions();
-            options.addArguments(ConfigUtil.getConfProperty("incognitoMode"));
-            webDriver = new ChromeDriver(options);
+            if (langFlag == true) {
+                ChromeOptions options = new ChromeOptions();
+                options.addArguments(ConfigUtil.getConfProperty("incognitoMode"));
+                webDriver = new ChromeDriver(options);
+            }
+            else {
+                ChromeOptions options = new ChromeOptions();
+                options.addArguments(ConfigUtil.getConfProperty("incognitoMode"), ConfigUtil.getConfProperty("engLang"));
+                webDriver = new ChromeDriver(options);
+            }
             webDriver.manage().deleteAllCookies();
             webDriver.manage().timeouts().implicitlyWait(Long.parseLong(ConfigUtil.getConfProperty("implicitWaitTime")),
                     TimeUnit.SECONDS);
             webDriver.manage().window().maximize();
         }
-        return webDriver;
+        return getDriver();
     }
 
-    public static WebDriver getEngInstance(){
-        if(webDriver == null) {
-            ConfigUtil.setConfig();
-            WebDriverManager.chromedriver().setup();
-            ChromeOptions options = new ChromeOptions();
-            options.addArguments(ConfigUtil.getConfProperty("incognitoMode"), ConfigUtil.getConfProperty("engLang"));
-            webDriver = new ChromeDriver(options);
-            webDriver.manage().deleteAllCookies();
-            webDriver.manage().window().maximize();
-        }
+    public static WebDriver getDriver() {
         return webDriver;
     }
 

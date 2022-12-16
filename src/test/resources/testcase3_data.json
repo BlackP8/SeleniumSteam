@@ -1,5 +1,3 @@
 {
-  "mainPageIdentifier" : "//*[@id = 'home_maincap_v7']",
-  "marketPage": "//*[@id = 'myMarketTabs']",
-  "marketBtnPath": "//*[@class='submenu_community']//a[contains(text(),'Market')]"
+  "searchBoxText": "golden"
 }

@@ -15,7 +15,7 @@ public class WaitUtil {
     private static WebDriverWait wait;
 
     public WaitUtil(String waitTime) {
-        wait = new WebDriverWait(SingleDriver.getInstance(), Long.parseLong(waitTime));
+        wait = new WebDriverWait(SingleDriver.getDriver(), Long.parseLong(waitTime));
     }
 
     public WebElement setPresenceWait(String locator) {

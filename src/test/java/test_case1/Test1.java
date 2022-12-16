@@ -1,11 +1,8 @@
 package test_case1;
 
 import config_utility.ConfigUtil;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import page_objects.AboutPage;
 import page_objects.MainPage;
@@ -17,24 +14,20 @@ import driver.SingleDriver;
 public class Test1 {
     @Test
     public static void aboutTest() {
-        SingleDriver.getEngInstance().get(ConfigUtil.getConfProperty("mainPageURL"));
+        SingleDriver.getInstance(false);
+        SingleDriver.getDriver().get(ConfigUtil.getConfProperty("mainPageURL"));
         ConfigUtil.setTestData(ConfigUtil.getConfProperty("testDataForTestCase1"));
 
         MainPage mainPage = new MainPage(ConfigUtil.getConfProperty("explicitWaitTime"));
-        WebElement expectedEl = SingleDriver.getInstance().findElement(By.xpath(ConfigUtil.getTestProperty("mainPageIdentifier")));
-        Assert.assertEquals(SingleDriver.getInstance().findElement(By.xpath(ConfigUtil.getTestProperty("mainPageIdentifier"))),
-                expectedEl);
+        Assert.assertEquals(mainPage.checkMainPage(), true, "Главная страница не открылась.");
 
-        Assert.assertEquals(mainPage.clickAboutBtn(ConfigUtil.getTestProperty("aboutBtnPath"),
-                ConfigUtil.getTestProperty("aboutPage")), true);
+        Assert.assertEquals(mainPage.clickAboutBtn(), true, "Страница About не открылась.");
 
         AboutPage aboutPage = new AboutPage(ConfigUtil.getConfProperty("explicitWaitTime"));
         Assert.assertEquals(Integer.parseInt(ConfigUtil.getTestProperty("playersCount")),
-                aboutPage.compareAmountOfPlayers(ConfigUtil.getTestProperty("gamersOnlineCount"),
-                        ConfigUtil.getTestProperty("gamersInGameCount")));
+                aboutPage.compareAmountOfPlayers(), "Количество игроков в игре больше, чем онлайн.");
 
-        Assert.assertEquals(aboutPage.clickStoreBtn(ConfigUtil.getTestProperty("storeBtnPath"),
-                 ConfigUtil.getTestProperty("mainPageIdentifier")), true);
+        Assert.assertEquals(aboutPage.clickStoreBtn(), true, "Главная страница не открылась.");
     }
 
     @AfterClass
