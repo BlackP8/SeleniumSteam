@@ -1,5 +1,6 @@
 package test_case3;
 
+import page_objects.ItemPage;
 import utilities.config_utility.ConfigUtil;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -37,8 +38,15 @@ public class Test3 {
         Assert.assertEquals(marketPage.checkGolden(ConfigUtil.getTestProperty("searchBoxText")), true,
                 "Первые 5 элементов не содержат слово golden в названии.");
 
-        Assert.assertEquals(marketPage.removeOptions(), true,
+        Assert.assertEquals(marketPage.removeOptions(ConfigUtil.getTestProperty("searchBoxText")), true,
                 "Список предметов не обновился.");
+
+        String firstItemName = marketPage.returnFirstItemName();
+        marketPage.firstItemClick();
+        ItemPage itemPage = new ItemPage(ConfigUtil.getConfProperty("explicitWaitTime"));
+        Assert.assertEquals(itemPage.compareItems(firstItemName, ConfigUtil.getTestProperty("dotaResult"),
+                ConfigUtil.getTestProperty("lifestealerResult"), ConfigUtil.getTestProperty("immortalResult")), true,
+                "Информация на странице предмета не соответствует фильтрам и названию предмета с предыдущей страницы.");
     }
 
     @AfterClass

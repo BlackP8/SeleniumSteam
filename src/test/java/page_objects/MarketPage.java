@@ -34,8 +34,10 @@ public class MarketPage {
     private static final String SHOWED_RESULTS = "//*[@class='market_search_results_header']//a[contains(text(), '%s')]";
     private static final String GAME_RESULT = "//*[@class='market_search_results_header']//a";
     private static final String RESULT_ITEMS = "//*[@id='searchResultsRows']//*[contains(@id,'name')]";
-    private static final String DELETE_BTN = "//*[@id='BG_bottom']//a[contains(text(),'Clear')]";
-    private static final String RESULTS_COUNT= "//*[@id='searchResults_total']";
+    private static final String DELETE_BTN = "//*[@class='market_search_results_header']//a[contains(text(), '%s')]//span";
+    private static final String RESULTS_COUNT = "//*[@id='searchResults_total']";
+    private static final String FIRST_ITEM_PATH = "//*[@id='resultlink_0']";
+    private static final String FIRST_ITEM_NAME = "//*[@id='result_0_name']";
 
     public MarketPage(String waitTime) {
         executor = (JavascriptExecutor) SingleDriver.getDriver();
@@ -119,10 +121,10 @@ public class MarketPage {
         return result;
     }
 
-    public boolean removeOptions() {
+    public boolean removeOptions(String goldenText) {
         boolean result = false;
         String count = util.setPresenceWait(RESULTS_COUNT).getText();
-        WebElement deleteBTN = util.setPresenceWait(DELETE_BTN);
+        WebElement deleteBTN = util.setPresenceWait(String.format(DELETE_BTN, goldenText));
         deleteBTN.click();
 
         if (count != util.setPresenceWait(RESULTS_COUNT).getText()) {
@@ -130,5 +132,14 @@ public class MarketPage {
         }
 
         return result;
+    }
+
+    public String returnFirstItemName() {
+        return util.setPresenceWait(FIRST_ITEM_NAME).getText();
+    }
+
+    public void firstItemClick() {
+        WebElement firstItem = util.setPresenceWait(FIRST_ITEM_PATH);
+        firstItem.click();
     }
 }
