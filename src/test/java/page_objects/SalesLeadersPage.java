@@ -6,11 +6,8 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import utilities.ConvertUtil;
 import utilities.wait_utility.WaitUtil;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author Pavel Romanov 12.12.2022
@@ -102,7 +99,7 @@ public class SalesLeadersPage {
 
     public Game getGameInfo() {
         Game firstGame = new Game(util.setPresenceWait(FIRST_ELEMENT_PATH + FIRST_ELEMENT_NAME).getText(),
-                SingleDriver.getDriver().findElement(By.xpath(FIRST_ELEMENT_PATH + FIRST_ELEMENT_PRICE)).getText(),
+                SingleDriver.getDriver().findElement(By.xpath(FIRST_ELEMENT_PATH + FIRST_ELEMENT_RELEASE)).getText(),
                 SingleDriver.getDriver().findElement(By.xpath(FIRST_ELEMENT_PATH + FIRST_ELEMENT_PRICE)).getText());
 
         return firstGame;

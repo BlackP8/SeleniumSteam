@@ -5,8 +5,6 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import utilities.wait_utility.WaitUtil;
 
-import java.util.Arrays;
-
 /**
  * @author Pavel Romanov 13.12.2022
  */

@@ -5,8 +5,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import utilities.ConvertUtil;
 import utilities.wait_utility.WaitUtil;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author Pavel Romanov 08.12.2022
