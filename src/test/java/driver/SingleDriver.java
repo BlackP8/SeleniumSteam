@@ -1,6 +1,6 @@
 package driver;
 
-import config_utility.ConfigUtil;
+import utilities.config_utility.ConfigUtil;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -30,7 +30,6 @@ public class SingleDriver {
                 options.addArguments(ConfigUtil.getConfProperty("incognitoMode"), ConfigUtil.getConfProperty("engLang"));
                 webDriver = new ChromeDriver(options);
             }
-            webDriver.manage().deleteAllCookies();
             webDriver.manage().timeouts().implicitlyWait(Long.parseLong(ConfigUtil.getConfProperty("implicitWaitTime")),
                     TimeUnit.SECONDS);
             webDriver.manage().window().maximize();

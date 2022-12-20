@@ -1,4 +1,4 @@
-package wait_utility;
+package utilities.wait_utility;
 
 import driver.SingleDriver;
 import org.openqa.selenium.By;

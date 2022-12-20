@@ -3,7 +3,7 @@ package page_objects;
 import driver.SingleDriver;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
-import wait_utility.WaitUtil;
+import utilities.wait_utility.WaitUtil;
 
 import java.util.Arrays;
 
@@ -23,16 +23,11 @@ public class GamePage {
         executor = (JavascriptExecutor) SingleDriver.getDriver();
     }
 
-    public boolean getData(String[] previousData) {
-        String[] data = new String[3];
+    public boolean getData(Game firstGame) {
         WebElement el = util.setPresenceWait(GAME_RELEASE);
         executor.executeScript(SCROLL_SCRIPT, el);
-        data[0] = util.setPresenceWait(GAME_NAME).getText();
-        data[1] = el.getText();
-        el = util.setPresenceWait(GAME_PRICE);
-        executor.executeScript(SCROLL_SCRIPT, el);
-        data[2] = el.getText();
+        Game currentGame = new Game(util.setPresenceWait(GAME_NAME).getText(), el.getText(), util.setPresenceWait(GAME_PRICE).getText());
 
-        return Arrays.equals(data, previousData);
+        return currentGame.equals(firstGame);
     }
 }

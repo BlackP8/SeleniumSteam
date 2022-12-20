@@ -4,7 +4,8 @@ import driver.SingleDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
-import wait_utility.WaitUtil;
+import utilities.ConvertUtil;
+import utilities.wait_utility.WaitUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,17 +20,14 @@ public class SalesLeadersPage {
     private static WebElement expectedEl;
     private static JavascriptExecutor executor;
     private static List<WebElement> elements = new ArrayList<>();
-    private static final String REGEX = "\\d+";
     private static final String SCROLL_SCRIPT = "arguments[0].scrollIntoView();";
     private static final String MORE_BUTTON_PATH = "//*[contains(@class, 'weeklytopsellers_BrowseTopSellersButton')]//button";
     private static final String MORE_PAGE_IDENTIFIER = "//*[@id='price_range']";
-    private static final String OS_UNCHECKED_BOX_PATH = "//*[@data-loc='SteamOS + Linux' and contains(@class,'tab_filter_control_row')]";
+    private static final String UNCHECKED_BOX_PATH = "//*[@data-loc='%s' and contains(@class,'tab_filter_control_row')]";
     private static final String OS_CHECKED_BOX_PATH = "//*[@data-loc='SteamOS + Linux' and contains(@class, 'checked')]";
     private static final String PLAYERS_COUNT_PATH = "//*[@data-collapse-name='category3' and contains(@class,'collapsed')]";
     private static final String PLAYERS_COUNT_POPUP_PATH = "//*[contains(@class,'block_content_inner') and @style='display: block;']";
-    private static final String COOP_UNCHECKED_BOX_PATH = "//*[@data-loc='Кооператив (LAN)' and contains(@class,'control_row')]";
     private static final String COOP_CHECKED_BOX_PATH = "//*[@id='category3']";
-    private static final String ACTION_UNCHECKED_BOX_PATH = "//*[@data-loc='Экшен' and contains(@class,'row')]";
     private static final String ACTION_CHECKED_BOX_PATH = "//*[@id='tags']";
     private static final String RESULTS_COUNT_TEXT = "//*[contains(@id,'search_results_filtered')]";
     private static final String RESULT_ELEMENTS = "//*[@id='search_resultsRows']//a";
@@ -53,8 +51,8 @@ public class SalesLeadersPage {
         return expectedEl.isDisplayed();
     }
 
-    public boolean chooseOS() {
-        WebElement osCheckbox = util.setPresenceWait(OS_UNCHECKED_BOX_PATH);
+    public boolean chooseOS(String os) {
+        WebElement osCheckbox = util.setPresenceWait(String.format(UNCHECKED_BOX_PATH, os));
         executor.executeScript(SCROLL_SCRIPT, osCheckbox);
         osCheckbox.click();
 
@@ -62,7 +60,7 @@ public class SalesLeadersPage {
         return expectedEl.isDisplayed();
     }
 
-    public boolean clickPlayersCountBtn() {
+    public boolean clickPlayersCountBtn(String playersType) {
         boolean result = false;
         WebElement  playersCountBtn = util.setPresenceWait(PLAYERS_COUNT_PATH );
         playersCountBtn.click();
@@ -70,7 +68,7 @@ public class SalesLeadersPage {
         WebElement popupMenu = util.setPresenceWait(PLAYERS_COUNT_POPUP_PATH);
 
         if(popupMenu.isDisplayed() == true) {
-            WebElement coopCheckBoxUnchecked = util.setPresenceWait(COOP_UNCHECKED_BOX_PATH);
+            WebElement coopCheckBoxUnchecked = util.setPresenceWait(String.format(UNCHECKED_BOX_PATH, playersType));
             coopCheckBoxUnchecked.click();
 
             WebElement coopCheckBoxChecked = util.setPresenceWait(COOP_CHECKED_BOX_PATH);
@@ -80,8 +78,8 @@ public class SalesLeadersPage {
         return result;
     }
 
-    public boolean chooseAction() {
-        WebElement actionCheckBox = util.setPresenceWait(ACTION_UNCHECKED_BOX_PATH);
+    public boolean chooseAction(String genre) {
+        WebElement actionCheckBox = util.setPresenceWait(String.format(UNCHECKED_BOX_PATH, genre));
         executor.executeScript(SCROLL_SCRIPT, actionCheckBox);
         actionCheckBox.click();
 
@@ -94,28 +92,20 @@ public class SalesLeadersPage {
         WebElement resultsCountText = util.setPresenceWait(RESULTS_COUNT_TEXT);
         executor.executeScript(SCROLL_SCRIPT, resultsCountText);
         String resultString = resultsCountText.getText();
-        Pattern p = Pattern.compile(REGEX);
-        Matcher m = p.matcher(resultString);
 
-        while(m.find()) {
-            resultString = m.group();
-            break;
-        }
-
-        int countFromText = Integer.parseInt(resultString);
+        int countFromText = Integer.parseInt(ConvertUtil.findNumber(resultString));
         elements = util.setAllPresenceWait(RESULT_ELEMENTS);
         int elementsCount = elements.size();
 
         return countFromText == elementsCount;
     }
 
-    public String[] getGameInfo() {
-        String[] gameInfo = new String[3];
-        gameInfo[0] = util.setPresenceWait(FIRST_ELEMENT_PATH + FIRST_ELEMENT_NAME).getText();
-        gameInfo[1] = SingleDriver.getDriver().findElement(By.xpath(FIRST_ELEMENT_PATH + FIRST_ELEMENT_RELEASE)).getText();
-        gameInfo[2] = SingleDriver.getDriver().findElement(By.xpath(FIRST_ELEMENT_PATH + FIRST_ELEMENT_PRICE)).getText();
+    public Game getGameInfo() {
+        Game firstGame = new Game(util.setPresenceWait(FIRST_ELEMENT_PATH + FIRST_ELEMENT_NAME).getText(),
+                SingleDriver.getDriver().findElement(By.xpath(FIRST_ELEMENT_PATH + FIRST_ELEMENT_PRICE)).getText(),
+                SingleDriver.getDriver().findElement(By.xpath(FIRST_ELEMENT_PATH + FIRST_ELEMENT_PRICE)).getText());
 
-        return gameInfo;
+        return firstGame;
     }
 
     public boolean clickFirstGame() {

@@ -1,4 +1,4 @@
-package config_utility;
+package utilities.config_utility;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

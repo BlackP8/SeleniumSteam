@@ -1,6 +1,6 @@
 package test_case3;
 
-import config_utility.ConfigUtil;
+import utilities.config_utility.ConfigUtil;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
@@ -26,7 +26,19 @@ public class Test3 {
 
         Assert.assertEquals(marketPage.clickAdvancedOptions(), true, "Форма SEARCH COMMUNITY MARKET не открылась.");
 
-        marketPage.setSearchParameters(ConfigUtil.getTestProperty("searchBoxText"));
+        marketPage.setSearchParameters(ConfigUtil.getTestProperty("dotaResult"),
+                ConfigUtil.getTestProperty("lifestealerResult"), ConfigUtil.getTestProperty("immortalResult"),
+                ConfigUtil.getTestProperty("searchBoxText"));
+
+        Assert.assertEquals(marketPage.searchBtnClick(ConfigUtil.getTestProperty("dotaResult"),
+                ConfigUtil.getTestProperty("lifestealerResult"), ConfigUtil.getTestProperty("immortalResult"),
+                ConfigUtil.getTestProperty("searchBoxText")), true, "Фильтры поиска не появились/неправильные.");
+
+        Assert.assertEquals(marketPage.checkGolden(ConfigUtil.getTestProperty("searchBoxText")), true,
+                "Первые 5 элементов не содержат слово golden в названии.");
+
+        Assert.assertEquals(marketPage.removeOptions(), true,
+                "Список предметов не обновился.");
     }
 
     @AfterClass

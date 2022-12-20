@@ -3,7 +3,7 @@ package page_objects;
 import driver.SingleDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import wait_utility.WaitUtil;
+import utilities.wait_utility.WaitUtil;
 
 /**
  * @author Pavel Romanov 09.12.2022

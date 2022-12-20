@@ -1,6 +1,6 @@
 package test_case1;
 
-import config_utility.ConfigUtil;
+import utilities.config_utility.ConfigUtil;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;

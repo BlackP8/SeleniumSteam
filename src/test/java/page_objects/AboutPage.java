@@ -3,7 +3,8 @@ package page_objects;
 import driver.SingleDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import wait_utility.WaitUtil;
+import utilities.ConvertUtil;
+import utilities.wait_utility.WaitUtil;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,7 +14,6 @@ import java.util.regex.Pattern;
 public class AboutPage {
     private WebElement storeButton;
     private WaitUtil util;
-    private static final String REGEX = "\\d+";
     private static final String MAIN_PAGE_IDENTIFIER = "//*[@id = 'home_maincap_v7']";
     private static final String GAMERS_ONLINE_PATH = "//*[@class='online_stat'][1]";
     private static final String GAMERS_IN_GAME_PATH = "//*[@class='online_stat'][2]";
@@ -24,23 +24,8 @@ public class AboutPage {
     }
 
     public int compareAmountOfPlayers() {
-        String playersOnline = util.setPresenceWait(GAMERS_ONLINE_PATH).getText();
-        String playingNow = util.setPresenceWait(GAMERS_IN_GAME_PATH).getText();
-
-        Pattern p = Pattern.compile(REGEX);
-        Matcher m = p.matcher(playersOnline);
-
-        while(m.find()) {
-            playersOnline = m.group();
-            break;
-        }
-
-        m = p.matcher(playingNow);
-        while(m.find()) {
-            playingNow = m.group();
-            break;
-        }
-        return Double.compare(Double.parseDouble(playersOnline), Double.parseDouble(playingNow));
+        return Double.compare(Double.parseDouble(ConvertUtil.findNumber(util.setPresenceWait(GAMERS_ONLINE_PATH).getText())),
+                Double.parseDouble(ConvertUtil.findNumber(util.setPresenceWait(GAMERS_IN_GAME_PATH).getText())));
     }
 
     public boolean clickStoreBtn() {
