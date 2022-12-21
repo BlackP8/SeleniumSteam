@@ -1,10 +1,11 @@
 package page_objects;
 
+import data_model.Game;
 import driver.SingleDriver;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
-import utilities.ConvertUtil;
+import utilities.convert_utility.ConvertUtil;
+import utilities.script_util.ScriptUtility;
 import utilities.wait_utility.WaitUtil;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +14,9 @@ import java.util.List;
  * @author Pavel Romanov 12.12.2022
  */
 public class SalesLeadersPage {
-    private WaitUtil util;
     private static WebElement expectedEl;
-    private static JavascriptExecutor executor;
+    private String value = "value";
     private static List<WebElement> elements = new ArrayList<>();
-    private static final String SCROLL_SCRIPT = "arguments[0].scrollIntoView();";
     private static final String MORE_BUTTON_PATH = "//*[contains(@class, 'weeklytopsellers_BrowseTopSellersButton')]//button";
     private static final String MORE_PAGE_IDENTIFIER = "//*[@id='price_range']";
     private static final String UNCHECKED_BOX_PATH = "//*[@data-loc='%s' and contains(@class,'tab_filter_control_row')]";
@@ -34,81 +33,86 @@ public class SalesLeadersPage {
     private static final String FIRST_ELEMENT_PRICE = "//*[contains(@class, 'search_price ')]";
     private static final String GAME_PAGE_IDENTIFIER = "//*[@id='game_highlights']";
 
-    public SalesLeadersPage(String waitTime) {
-        executor = (JavascriptExecutor) SingleDriver.getDriver();
-        util = new WaitUtil(waitTime);
+    public SalesLeadersPage() { }
+
+    public void clickMoreBtn() {
+        WebElement moreBtn = WaitUtil.setPresenceWait(MORE_BUTTON_PATH);
+        ScriptUtility.scrollToElement(moreBtn);
+        moreBtn.click();
     }
 
-    public boolean clickMoreBtn() {
-        WebElement moreBtn = util.setPresenceWait(MORE_BUTTON_PATH);
-        executor.executeScript(SCROLL_SCRIPT, moreBtn);
-        moreBtn.click();
-
-        expectedEl = util.setPresenceWait(MORE_PAGE_IDENTIFIER);
+    public boolean checkMorePage() {
+        expectedEl = WaitUtil.setPresenceWait(MORE_PAGE_IDENTIFIER);
         return expectedEl.isDisplayed();
     }
 
-    public boolean chooseOS(String os) {
-        WebElement osCheckbox = util.setPresenceWait(String.format(UNCHECKED_BOX_PATH, os));
-        executor.executeScript(SCROLL_SCRIPT, osCheckbox);
+    public void chooseOS(String os) {
+        WebElement osCheckbox = SingleDriver.getDriver().findElement(By.xpath(String.format(UNCHECKED_BOX_PATH, os)));
+        ScriptUtility.scrollToElement(osCheckbox);
         osCheckbox.click();
+    }
 
+    public boolean checkOSCheckBox() {
         expectedEl = SingleDriver.getDriver().findElement(By.xpath(OS_CHECKED_BOX_PATH));
         return expectedEl.isDisplayed();
     }
 
-    public boolean clickPlayersCountBtn(String playersType) {
-        boolean result = false;
-        WebElement  playersCountBtn = util.setPresenceWait(PLAYERS_COUNT_PATH );
+    public void clickPlayersCountBtn(String playersType) {
+        WebElement  playersCountBtn = WaitUtil.setPresenceWait(PLAYERS_COUNT_PATH );
         playersCountBtn.click();
 
-        WebElement popupMenu = util.setPresenceWait(PLAYERS_COUNT_POPUP_PATH);
+        WebElement popupMenu = SingleDriver.getDriver().findElement(By.xpath(PLAYERS_COUNT_POPUP_PATH));
 
         if(popupMenu.isDisplayed() == true) {
-            WebElement coopCheckBoxUnchecked = util.setPresenceWait(String.format(UNCHECKED_BOX_PATH, playersType));
+            WebElement coopCheckBoxUnchecked = SingleDriver.getDriver().findElement(By.xpath(String.format(UNCHECKED_BOX_PATH, playersType)));
             coopCheckBoxUnchecked.click();
-
-            WebElement coopCheckBoxChecked = util.setPresenceWait(COOP_CHECKED_BOX_PATH);
-            String value = coopCheckBoxChecked.getAttribute("value");
-            result = value.isEmpty();
         }
-        return result;
     }
 
-    public boolean chooseAction(String genre) {
-        WebElement actionCheckBox = util.setPresenceWait(String.format(UNCHECKED_BOX_PATH, genre));
-        executor.executeScript(SCROLL_SCRIPT, actionCheckBox);
-        actionCheckBox.click();
+    public boolean checkCoopCheckBox() {
+        WebElement coopCheckBoxChecked = WaitUtil.setPresenceWait(COOP_CHECKED_BOX_PATH);
+        String param = coopCheckBoxChecked.getAttribute(value);
+        return param.isEmpty();
+    }
 
-        expectedEl = util.setPresenceWait(ACTION_CHECKED_BOX_PATH);
-        String value = expectedEl.getAttribute("value");
-        return value.isEmpty();
+    public void chooseAction(String genre) {
+        WebElement actionCheckBox = SingleDriver.getDriver().findElement(By.xpath(String.format(UNCHECKED_BOX_PATH, genre)));
+        ScriptUtility.scrollToElement(actionCheckBox);
+        actionCheckBox.click();
+    }
+
+    public boolean checkActionCheckBox() {
+        expectedEl = WaitUtil.setPresenceWait(ACTION_CHECKED_BOX_PATH);
+        String param = expectedEl.getAttribute(value);
+        return param.isEmpty();
     }
 
     public boolean compareResults() {
-        WebElement resultsCountText = util.setPresenceWait(RESULTS_COUNT_TEXT);
-        executor.executeScript(SCROLL_SCRIPT, resultsCountText);
+        WebElement resultsCountText = WaitUtil.setPresenceWait(RESULTS_COUNT_TEXT);
+        ScriptUtility.scrollToElement(resultsCountText);
         String resultString = resultsCountText.getText();
 
         int countFromText = Integer.parseInt(ConvertUtil.findNumber(resultString));
-        elements = util.setAllPresenceWait(RESULT_ELEMENTS);
+        elements = WaitUtil.setAllPresenceWait(RESULT_ELEMENTS);
         int elementsCount = elements.size();
 
         return countFromText == elementsCount;
     }
 
     public Game getGameInfo() {
-        Game firstGame = new Game(util.setPresenceWait(FIRST_ELEMENT_PATH + FIRST_ELEMENT_NAME).getText(),
+        Game firstGame = new Game(WaitUtil.setPresenceWait(FIRST_ELEMENT_PATH + FIRST_ELEMENT_NAME).getText(),
                 SingleDriver.getDriver().findElement(By.xpath(FIRST_ELEMENT_PATH + FIRST_ELEMENT_RELEASE)).getText(),
                 SingleDriver.getDriver().findElement(By.xpath(FIRST_ELEMENT_PATH + FIRST_ELEMENT_PRICE)).getText());
 
         return firstGame;
     }
 
-    public boolean clickFirstGame() {
+    public void clickFirstGame() {
         elements.get(0).click();
+    }
 
-        WebElement gamePage = util.setPresenceWait(GAME_PAGE_IDENTIFIER);
+    public boolean checkGamePage() {
+        WebElement gamePage = WaitUtil.setPresenceWait(GAME_PAGE_IDENTIFIER);
         return gamePage.isDisplayed();
     }
 }

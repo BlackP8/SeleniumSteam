@@ -1,5 +1,6 @@
 package test_case1;
 
+import org.testng.annotations.BeforeClass;
 import utilities.config_utility.ConfigUtil;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -12,22 +13,28 @@ import driver.SingleDriver;
  * @author Pavel Romanov 08.12.2022
  */
 public class Test1 {
+    private static String mainPageURL;
+
+    @BeforeClass
+    public static void setUp() {
+        SingleDriver.getInstance(false);
+        mainPageURL = ConfigUtil.getConfProperty("mainPageURL");
+        SingleDriver.getDriver().get(mainPageURL);
+    }
+
     @Test
     public static void aboutTest() {
-        SingleDriver.getInstance(false);
-        SingleDriver.getDriver().get(ConfigUtil.getConfProperty("mainPageURL"));
-        ConfigUtil.setTestData(ConfigUtil.getConfProperty("testDataForTestCase1"));
+        MainPage mainPage = new MainPage();
+        Assert.assertTrue(mainPage.checkMainPage(), "Главная страница не открылась.");
 
-        MainPage mainPage = new MainPage(ConfigUtil.getConfProperty("explicitWaitTime"));
-        Assert.assertEquals(mainPage.checkMainPage(), true, "Главная страница не открылась.");
+        mainPage.clickAboutBtn();
+        Assert.assertTrue(mainPage.checkAboutPage(), "Страница About не открылась.");
 
-        Assert.assertEquals(mainPage.clickAboutBtn(), true, "Страница About не открылась.");
+        AboutPage aboutPage = new AboutPage();
+        Assert.assertTrue(aboutPage.compareAmountOfPlayers(), "Количество игроков в игре больше, чем онлайн.");
 
-        AboutPage aboutPage = new AboutPage(ConfigUtil.getConfProperty("explicitWaitTime"));
-        Assert.assertEquals(Integer.parseInt(ConfigUtil.getTestProperty("playersCount")),
-                aboutPage.compareAmountOfPlayers(), "Количество игроков в игре больше, чем онлайн.");
-
-        Assert.assertEquals(aboutPage.clickStoreBtn(), true, "Главная страница не открылась.");
+        aboutPage.clickStoreBtn();
+        Assert.assertTrue(aboutPage.checkMainPage(), "Главная страница не открылась.");
     }
 
     @AfterClass

@@ -1,5 +1,6 @@
 package test_case3;
 
+import org.testng.annotations.BeforeClass;
 import page_objects.ItemPage;
 import utilities.config_utility.ConfigUtil;
 import org.testng.Assert;
@@ -13,39 +14,55 @@ import driver.SingleDriver;
  * @author Pavel Romanov 10.12.2022
  */
 public class Test3 {
-    @Test
-    public static void marketTest() {
+    private static String mainPageURL;
+    private static String testData;
+    private static String dotaResult;
+    private static String lifestealerResult;
+    private static String immortalResult;
+    private static String searchBoxText;
+
+    @BeforeClass
+    public static void setUp() {
         SingleDriver.getInstance(false);
+        mainPageURL = ConfigUtil.getConfProperty("mainPageURL");
+        testData = ConfigUtil.getConfProperty("testDataForTestCase3");
         SingleDriver.getDriver().get(ConfigUtil.getConfProperty("mainPageURL"));
         ConfigUtil.setTestData(ConfigUtil.getConfProperty("testDataForTestCase3"));
+        dotaResult = ConfigUtil.getTestProperty("dotaResult");
+        lifestealerResult = ConfigUtil.getTestProperty("lifestealerResult");
+        immortalResult = ConfigUtil.getTestProperty("immortalResult");
+        searchBoxText = ConfigUtil.getTestProperty("searchBoxText");
+    }
 
-        MainPage mainPage = new MainPage(ConfigUtil.getConfProperty("explicitWaitTime"));
-        Assert.assertEquals(mainPage.checkMainPage(), true, "Главная страница не открылась.");
+    @Test
+    public static void marketTest() {
+        MainPage mainPage = new MainPage();
+        Assert.assertTrue(mainPage.checkMainPage(), "Главная страница не открылась.");
 
-        MarketPage marketPage = new MarketPage(ConfigUtil.getConfProperty("explicitWaitTime"));
-        Assert.assertEquals(marketPage.clickMarketBtn(), true, "Страница Community Market не открылась.");
+        MarketPage marketPage = new MarketPage();
+        marketPage.clickMarketBtn();
+        Assert.assertTrue(marketPage.checkMarketPage(), "Страница Community Market не открылась.");
 
-        Assert.assertEquals(marketPage.clickAdvancedOptions(), true, "Форма SEARCH COMMUNITY MARKET не открылась.");
+        marketPage.clickAdvancedOptions();
+        Assert.assertTrue(marketPage.checkSearchForm(), "Форма SEARCH COMMUNITY MARKET не открылась.");
 
-        marketPage.setSearchParameters(ConfigUtil.getTestProperty("dotaResult"),
-                ConfigUtil.getTestProperty("lifestealerResult"), ConfigUtil.getTestProperty("immortalResult"),
-                ConfigUtil.getTestProperty("searchBoxText"));
+        marketPage.setSearchParameters(dotaResult, lifestealerResult, immortalResult, searchBoxText);
+        marketPage.searchBtnClick();
 
-        Assert.assertEquals(marketPage.searchBtnClick(ConfigUtil.getTestProperty("dotaResult"),
-                ConfigUtil.getTestProperty("lifestealerResult"), ConfigUtil.getTestProperty("immortalResult"),
-                ConfigUtil.getTestProperty("searchBoxText")), true, "Фильтры поиска не появились/неправильные.");
+        Assert.assertTrue(marketPage.compareItemParameters(dotaResult, lifestealerResult, immortalResult, searchBoxText),
+                "Фильтры поиска не появились/неправильные.");
 
-        Assert.assertEquals(marketPage.checkGolden(ConfigUtil.getTestProperty("searchBoxText")), true,
+        Assert.assertTrue(marketPage.checkGolden(searchBoxText),
                 "Первые 5 элементов не содержат слово golden в названии.");
 
-        Assert.assertEquals(marketPage.removeOptions(ConfigUtil.getTestProperty("searchBoxText")), true,
-                "Список предметов не обновился.");
+        marketPage.removeOptions(searchBoxText);
+        Assert.assertTrue(marketPage.compareSearchResults(), "Список предметов не обновился.");
 
         String firstItemName = marketPage.returnFirstItemName();
         marketPage.firstItemClick();
-        ItemPage itemPage = new ItemPage(ConfigUtil.getConfProperty("explicitWaitTime"));
-        Assert.assertEquals(itemPage.compareItems(firstItemName, ConfigUtil.getTestProperty("dotaResult"),
-                ConfigUtil.getTestProperty("lifestealerResult"), ConfigUtil.getTestProperty("immortalResult")), true,
+
+        ItemPage itemPage = new ItemPage();
+        Assert.assertTrue(itemPage.compareItems(firstItemName, dotaResult, lifestealerResult, immortalResult),
                 "Информация на странице предмета не соответствует фильтрам и названию предмета с предыдущей страницы.");
     }
 

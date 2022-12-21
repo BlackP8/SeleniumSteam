@@ -1,4 +1,4 @@
-package page_objects;
+package data_model;
 
 import java.util.Objects;
 

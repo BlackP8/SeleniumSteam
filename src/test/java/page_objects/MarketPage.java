@@ -2,9 +2,9 @@ package page_objects;
 
 import driver.SingleDriver;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import utilities.script_util.ScriptUtility;
 import utilities.wait_utility.WaitUtil;
 
 import java.util.ArrayList;
@@ -14,12 +14,10 @@ import java.util.List;
  * @author Pavel Romanov 10.12.2022
  */
 public class MarketPage {
-    private WaitUtil util;
     private WebElement expectedEl;
-    private static JavascriptExecutor executor;
     private static WebElement searchbBox;
+    private static String searchResultsCount;
     private static List<WebElement> elements = new ArrayList<>();
-    private static final String SCROLL_SCRIPT = "arguments[0].scrollIntoView();";
     private static final String COMMUNITY_BUTTON_PATH = "//*[@class='supernav_container']//a[contains(text(), 'COMMUNITY')]";
     private static final String MARKET_BUTTON_PATH = "//*[@class='supernav_content']//a[contains(text(),'Market')]";
     private static final String MARKET_PAGE_IDENTIFIER = "//*[@id = 'myMarketTabs']";
@@ -39,64 +37,67 @@ public class MarketPage {
     private static final String FIRST_ITEM_PATH = "//*[@id='resultlink_0']";
     private static final String FIRST_ITEM_NAME = "//*[@id='result_0_name']";
 
-    public MarketPage(String waitTime) {
-        executor = (JavascriptExecutor) SingleDriver.getDriver();
-        util = new WaitUtil(waitTime);
-    }
+    public MarketPage() { }
 
-    public boolean clickMarketBtn() {
+    public void clickMarketBtn() {
         Actions action = new Actions(SingleDriver.getDriver());
         WebElement target = SingleDriver.getDriver().findElement(By.xpath(COMMUNITY_BUTTON_PATH));
         action.moveToElement(target).perform();
 
-        WebElement marketButton = util.setPresenceWait(MARKET_BUTTON_PATH);
+        WebElement marketButton = WaitUtil.setPresenceWait(MARKET_BUTTON_PATH);
         marketButton.click();
+    }
 
-        expectedEl = util.setPresenceWait(MARKET_PAGE_IDENTIFIER);
+    public boolean checkMarketPage() {
+        expectedEl = WaitUtil.setPresenceWait(MARKET_PAGE_IDENTIFIER);
         return expectedEl.isDisplayed();
     }
 
-    public boolean clickAdvancedOptions() {
-        WebElement showAdvancedBtn = util.setPresenceWait(SHOW_ADVANCED_BUTTON_PATH);
-        executor.executeScript(SCROLL_SCRIPT, showAdvancedBtn);
+    public void clickAdvancedOptions() {
+        WebElement showAdvancedBtn = WaitUtil.setPresenceWait(SHOW_ADVANCED_BUTTON_PATH);
+        ScriptUtility.scrollToElement(showAdvancedBtn);
         showAdvancedBtn.click();
+    }
 
-        expectedEl = util.setPresenceWait(SEARCH_FROM_IDENTIFIER);
+    public boolean checkSearchForm() {
+        expectedEl = WaitUtil.setPresenceWait(SEARCH_FROM_IDENTIFIER);
         return expectedEl.isDisplayed();
     }
 
     public void setSearchParameters(String gameName, String heroName, String rarity, String searchBoxText) {
-        WebElement gamesMenu = util.setPresenceWait(ALL_GAMES_MENU);
+        WebElement gamesMenu = WaitUtil.setPresenceWait(ALL_GAMES_MENU);
         gamesMenu.click();
 
-        WebElement dotaOption = util.setPresenceWait(String.format(GAME_OPTION_PATH, gameName));
-        executor.executeScript(SCROLL_SCRIPT, dotaOption);
+        WebElement dotaOption = WaitUtil.setPresenceWait(String.format(GAME_OPTION_PATH, gameName));
+        ScriptUtility.scrollToElement(dotaOption);
         dotaOption.click();
 
-        WebElement heroOption = util.setPresenceWait(String.format(HERO_OPTION_PATH, heroName));
-        executor.executeScript(SCROLL_SCRIPT, heroOption);
+        WebElement heroOption = WaitUtil.setPresenceWait(String.format(HERO_OPTION_PATH, heroName));
+        ScriptUtility.scrollToElement(heroOption);;
         heroOption.click();
 
-        WebElement immortalCheckBox = util.setPresenceWait(String.format(RARITY_CHECKBOX_PATH, rarity));
+        WebElement immortalCheckBox = WaitUtil.setPresenceWait(String.format(RARITY_CHECKBOX_PATH, rarity));
         immortalCheckBox.click();
 
-        searchbBox = util.setPresenceWait(SEARCHBOX_PATH);
+        searchbBox = WaitUtil.setPresenceWait(SEARCHBOX_PATH);
         searchbBox.click();
         searchbBox.sendKeys(searchBoxText);
     }
 
-    public boolean searchBtnClick(String gameName, String heroName, String rarity, String searchBoxText) {
-        boolean output = false;
-        WebElement searchBtn = util.setPresenceWait(SEARCH_BUTTON_PATH);
+    public void searchBtnClick() {
+        WebElement searchBtn = WaitUtil.setPresenceWait(SEARCH_BUTTON_PATH);
         searchBtn.click();
+    }
 
-        String result1 = util.setPresenceWait(GAME_RESULT).getText();
-        String result2 = util.setPresenceWait(String.format(SHOWED_RESULTS, heroName)).getText();
-        String result3 = util.setPresenceWait(String.format(SHOWED_RESULTS, rarity)).getText();
-        String result4 = util.setPresenceWait(String.format(SHOWED_RESULTS, searchBoxText)).getText().replace("\"", "");
+    public boolean compareItemParameters(String gameName, String heroName, String rarity, String searchBoxText) {
+        boolean output = false;
+        String result1 = WaitUtil.setPresenceWait(GAME_RESULT).getText();
+        String result2 = WaitUtil.setPresenceWait(String.format(SHOWED_RESULTS, heroName)).getText();
+        String result3 = WaitUtil.setPresenceWait(String.format(SHOWED_RESULTS, rarity)).getText();
+        String result4 = WaitUtil.setPresenceWait(String.format(SHOWED_RESULTS, searchBoxText)).getText().replace("\"", "");
 
         if(gameName.equals(result1) && heroName.equals(result2) && rarity.equals(result3)
-        && searchBoxText.equals(result4)) {
+                && searchBoxText.equals(result4)) {
             output = true;
         }
 
@@ -106,7 +107,7 @@ public class MarketPage {
     public boolean checkGolden(String goldenText) {
         boolean result = false;
         int count = 0;
-        elements = util.setAllPresenceWait(RESULT_ITEMS);
+        elements = WaitUtil.setAllPresenceWait(RESULT_ITEMS);
 
         for (int i = 0; i < 5; i++) {
             if (elements.get(i).getText().toLowerCase().contains(goldenText)) {
@@ -121,13 +122,15 @@ public class MarketPage {
         return result;
     }
 
-    public boolean removeOptions(String goldenText) {
-        boolean result = false;
-        String count = util.setPresenceWait(RESULTS_COUNT).getText();
-        WebElement deleteBTN = util.setPresenceWait(String.format(DELETE_BTN, goldenText));
+    public void removeOptions(String goldenText) {
+        searchResultsCount = WaitUtil.setPresenceWait(RESULTS_COUNT).getText();
+        WebElement deleteBTN = WaitUtil.setPresenceWait(String.format(DELETE_BTN, goldenText));
         deleteBTN.click();
+    }
 
-        if (count != util.setPresenceWait(RESULTS_COUNT).getText()) {
+    public boolean compareSearchResults() {
+        boolean result = false;
+        if (searchResultsCount != WaitUtil.setPresenceWait(RESULTS_COUNT).getText()) {
             result = true;
         }
 
@@ -135,11 +138,11 @@ public class MarketPage {
     }
 
     public String returnFirstItemName() {
-        return util.setPresenceWait(FIRST_ITEM_NAME).getText();
+        return WaitUtil.setPresenceWait(FIRST_ITEM_NAME).getText();
     }
 
     public void firstItemClick() {
-        WebElement firstItem = util.setPresenceWait(FIRST_ITEM_PATH);
+        WebElement firstItem = WaitUtil.setPresenceWait(FIRST_ITEM_PATH);
         firstItem.click();
     }
 }
